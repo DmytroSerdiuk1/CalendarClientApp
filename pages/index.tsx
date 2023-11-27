@@ -10,6 +10,7 @@ import {
 import dynamic from "next/dynamic";
 import { CalendarViews } from "@/enums/CalendarViews";
 import { EventData } from "@/types/EventData";
+import { useRouter } from "next/router";
 
 const AddEventModal = dynamic(
   () => import("@/components/Modals/AddEventModal"),
@@ -17,10 +18,11 @@ const AddEventModal = dynamic(
 );
 
 export default function Home() {
+  const router = useRouter();
   const editData = useRef<EventData | null>(null);
   const [isOpenEditModal, setIsOpenEditModal] = useState(false);
   const [activeView, setActiveView] = useState<CalendarViews>(
-    CalendarViews.MONTH,
+    (router.query.view as CalendarViews) || CalendarViews.MONTH,
   );
   const [startOfTheSelectedMonth, setStartOfTheSelectedMonth] = useState(
     new Date(),
@@ -28,16 +30,26 @@ export default function Home() {
   const [endOfTheSelectedMonth, setEndOfTheSelectedMonth] = useState(
     new Date(),
   );
-  const [activeDate, setActiveDate] = useState(new Date());
+  const [activeDate, setActiveDate] = useState(
+    router.query.date ? new Date(router.query.date as string) : new Date(),
+  );
 
   const { data: events, isLoading: isEventLoading } = useGetEventsQuery({
     fromDate: startOfTheSelectedMonth.toDateString(),
     toDate: endOfTheSelectedMonth.toDateString(),
   });
+
   const [deleteEvent] = useDeleteEventMutation();
+
   useEffect(() => {
-    setActiveDate(new Date());
-  }, [activeView]);
+    router.replace({
+      query: {
+        ...router.query,
+        view: activeView,
+        date: activeDate.toDateString(),
+      },
+    });
+  }, [activeView, activeDate]);
 
   const navigateByView = {
     prev: {
@@ -61,7 +73,10 @@ export default function Home() {
         <div className="flex max-h-[100vh] flex-grow flex-col">
           <CalendarHeader
             viewValue={activeView}
-            handleChangeView={setActiveView}
+            handleChangeView={(view) => {
+              setActiveView(view);
+              setActiveDate(new Date());
+            }}
             activeDate={activeDate}
             onClickToday={() => setActiveDate(new Date())}
             onClickNext={() => navigateByView.next[activeView]()}
@@ -71,6 +86,13 @@ export default function Home() {
               currentView={activeView}
               activeDate={activeDate}
               getSelectedDate={(fromDate: Date, toDate: Date): void => {
+                router.replace({
+                  query: {
+                    ...router.query,
+                    start: fromDate.toDateString(),
+                    end: toDate.toDateString(),
+                  },
+                });
                 setStartOfTheSelectedMonth(fromDate);
                 setEndOfTheSelectedMonth(toDate);
               }}
