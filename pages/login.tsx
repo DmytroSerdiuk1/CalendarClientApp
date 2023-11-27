@@ -35,6 +35,7 @@ export default function Login() {
       })
       .finally(() => setIsLoading(false));
   };
+  console.log(errors);
 
   return (
     <div className={"relative h-screen w-screen "}>
@@ -52,14 +53,18 @@ export default function Login() {
             className={"flex flex-col gap-4"}
           >
             <Input
-              error={!!errors.email?.message}
-              {...register("email", { required: true })}
+              error={!!errors.email}
+              {...register("email", {
+                required: true,
+              })}
               label="Email"
               crossOrigin={"anonymous"}
             />
             <Input
-              error={!!errors.password?.message}
-              {...register("password", { required: true })}
+              error={!!errors.password}
+              {...register("password", {
+                required: true,
+              })}
               type={"password"}
               label="Password"
               crossOrigin={"anonymous"}

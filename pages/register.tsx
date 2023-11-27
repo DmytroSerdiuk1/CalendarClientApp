@@ -66,30 +66,44 @@ export default function Register() {
                 "flex flex-wrap justify-between gap-4 md:flex-nowrap md:gap-2"
               }
             >
-              <Input
-                {...register("firstName", { required: true })}
-                containerProps={{ className: "min-w-[102px]" }}
-                className={"w-full"}
-                label="First name"
-                crossOrigin={"anonymous"}
-              />
-              <Input
-                {...register("lastName", { required: true })}
-                containerProps={{ className: "min-w-[102px]" }}
-                className={"w-full"}
-                label="Last name"
-                crossOrigin={"anonymous"}
-              />
+              <div className={"w-full"}>
+                <Input
+                  {...register("firstName", {
+                    required: true,
+                  })}
+                  error={!!errors?.firstName}
+                  containerProps={{ className: "min-w-[102px]" }}
+                  className={"w-full"}
+                  label="First name"
+                  crossOrigin={"anonymous"}
+                />
+              </div>
+              <div className={"w-full"}>
+                <Input
+                  error={!!errors?.lastName}
+                  {...register("lastName", {
+                    required: true,
+                  })}
+                  containerProps={{ className: "min-w-[102px]" }}
+                  className={"w-full"}
+                  label="Last name"
+                  crossOrigin={"anonymous"}
+                />
+              </div>
             </div>
             <Input
-              error={!!errors.email?.message}
-              {...register("email", { required: true })}
+              error={!!errors.email}
+              {...register("email", {
+                required: true,
+              })}
               label="Email"
               crossOrigin={"anonymous"}
             />
             <Input
-              error={!!errors.password?.message}
-              {...register("password", { required: true })}
+              error={!!errors.password}
+              {...register("password", {
+                required: true,
+              })}
               type={"password"}
               label="Password"
               crossOrigin={"anonymous"}

@@ -27,7 +27,12 @@ interface AddEventModalProps {
 
 const AddEventModal: FC<AddEventModalProps> = ({ editData, open, handler }) => {
   const { enqueueSnackbar } = useSnackbar();
-  const { register, reset, handleSubmit } = useForm({
+  const {
+    register,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm({
     defaultValues: {
       title: editData?.title || "",
       date: editData?.date || "",
@@ -88,13 +93,15 @@ const AddEventModal: FC<AddEventModalProps> = ({ editData, open, handler }) => {
       <form onSubmit={handleSubmit(onSubmit)}>
         <DialogBody className={"flex flex-col gap-4 py-0"}>
           <Input
+            error={!!errors.title}
             crossOrigin={"anonymous"}
-            {...register("title")}
+            {...register("title", { required: true })}
             label={"Title"}
           />
           <Input
+            error={!!errors.date}
             crossOrigin={"anonymous"}
-            {...register("date")}
+            {...register("date", { required: true })}
             label={"Date"}
             type={"datetime-local"}
           />

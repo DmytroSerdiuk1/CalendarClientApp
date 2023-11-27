@@ -27,6 +27,16 @@ const AuthProvider: FC<{
     }
   }, [user, accessToken, refreshToken, pageProps, router]);
 
+  if (
+    !user &&
+    !accessToken &&
+    !refreshToken &&
+    pageProps.isProtected &&
+    typeof window !== "undefined"
+  ) {
+    return null;
+  }
+
   return <>{children}</>;
 };
 
